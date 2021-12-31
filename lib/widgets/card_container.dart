@@ -13,9 +13,9 @@ class CardContainer extends StatelessWidget {
       child: Container(
         width:  double.infinity,
         //height: 300,
-        padding: EdgeInsets.all(20), // para que el contenido no quede pegado a los bordes
+        padding: const EdgeInsets.all(20), // para que el contenido no quede pegado a los bordes
         decoration: _createCardShape(),
-        child: this.childCardContainer,
+        child: childCardContainer,
       ),
     );
   }

@@ -1,0 +1,1 @@
+export 'package:productosapp_as/models/product.dart';

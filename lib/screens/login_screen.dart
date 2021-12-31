@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:productosapp_as/providers/login_form_provider.dart';
 import 'package:productosapp_as/ui/input_decorations.dart';
@@ -15,7 +14,7 @@ class LoginScreen extends StatelessWidget {
         childAuthB: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 170,), //250 para la tablet
+              const SizedBox(height: 250,), //250 para la tablet // 170 para el celular
               CardContainer(
                 childCardContainer: Column(
                   children: [
@@ -26,14 +25,14 @@ class LoginScreen extends StatelessWidget {
                      //Solo se declara a este nivel el provider porque solo se usará para el login
                      ChangeNotifierProvider(
                          create: ( _ ) => LoginFormProvider(),
-                         child: _LoginForm(),
+                         child: const _LoginForm(),
                      ),
                   ],
                 )
               ),
-              const SizedBox(height: 25.0,), //50 para la tablet
+              const SizedBox(height: 50.0,), //50 para la tablet //25 para el celular
               const Text('Crear una cuenta',style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),),
-              const SizedBox(height: 25.0,),
+              const SizedBox(height: 50.0,),//50 para la tablet //25 para el celular
             ],
 
           ),
@@ -113,12 +112,12 @@ class _LoginForm extends StatelessWidget {
               elevation: 0,
               color: Colors.deepPurple,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
                 child: Text(
                   loginForm.getIsLoading
                   ? 'Espere'
                   : 'Ingresar',
-                  style: TextStyle(color: Colors.white),),
+                  style: const TextStyle(color: Colors.white),),
               ),
               //Si es true, pone null para desactivar el botoón, en caso contrario ejecuta el bloque de código.
               onPressed:loginForm.getIsLoading ? null :() async{
@@ -136,7 +135,7 @@ class _LoginForm extends StatelessWidget {
 
                   //Regresar a false
                   loginForm.setIsLoadind = false;
-                  
+
                   Navigator.pushReplacementNamed(context, 'home');
                 }
 

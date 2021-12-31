@@ -16,7 +16,7 @@ class AuthBackground extends StatelessWidget {
         children:   [
            const _PurpleBox(),   //fondo morado con las burbujas
            const _HeaderIcon(),  //icono
-           this.childAuthB //es el card_container donde aparece los datos del login
+           childAuthB //es el card_container donde aparece los datos del login
         ],
       ),
     );
