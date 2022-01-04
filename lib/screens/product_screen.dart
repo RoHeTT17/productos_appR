@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:productosapp_as/services/services.dart';
 import 'package:productosapp_as/ui/input_decorations.dart';
 import 'package:productosapp_as/widgets/widgets.dart';
-
 
 class ProductScreen extends StatelessWidget {
   const ProductScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
+    final productService = Provider.of<ProductsService>(context);
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
             Stack(
               children: [
-                const ProductImage(),
+
+                //En el momento del onTap (en home screen), se creo la copía por eso se puede utilizar aquí.
+                ProductImage( urlImage: productService.selectedProduct.picture, ),
                 Positioned(child: 
                             IconButton(icon: const Icon(Icons.arrow_back_ios_new, size: 40, color: Colors.white,),
                             onPressed: ()=> Navigator.of(context).pop(),),

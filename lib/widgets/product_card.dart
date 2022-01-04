@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:productosapp_as/models/models.dart';
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({Key? key}) : super(key: key);
+
+  final Product product;
+
+  const ProductCard({Key? key, required this.product}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,11 +18,13 @@ class ProductCard extends StatelessWidget {
         decoration: _cardBorders(),
         child: Stack(
           alignment: Alignment.bottomLeft,
-          children: const [
-            _BackgroundImage(),
-            _ProductDetails(),
-            Positioned(child: _PriceTag(),top: 0,right: 0,),
-            Positioned(child: _NotAvailable(),top: 0,left: 0,),
+          children:  [
+            _BackgroundImage( urlImage: product.picture,),
+            _ProductDetails(idProduct: product.id, nameProduc: product.name,),
+            Positioned(child: _PriceTag(priceProduct: product.price,),top: 0,right: 0,),
+           
+            if (product.available)
+               Positioned(child: _NotAvailable(productDisponible: product.available,),top: 0,left: 0,),
           ],
         ),
       ),
@@ -38,33 +44,84 @@ class ProductCard extends StatelessWidget {
   );
 }
 
-class _NotAvailable extends StatelessWidget {
-  const _NotAvailable({ Key? key,}) : super(key: key);
+class _BackgroundImage extends StatelessWidget {
+  
+  final String ?urlImage;
+  const _BackgroundImage({
+    Key? key, this.urlImage,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 100,
-      height: 70,
-      alignment: Alignment.center,
-      child: const FittedBox(
-        fit: BoxFit.contain,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Text('No disponible', style: TextStyle(color: Colors.white, fontSize: 20),),
-        ),
-      ),
-
-      decoration: BoxDecoration(
-        color: Colors.yellow[800],
-        borderRadius: const BorderRadius.only(topLeft: Radius.circular(25),bottomRight: Radius.circular(25))
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(25),
+      child: Container(
+        width:  double.infinity,
+        height: 400.0,
+        child: urlImage == null
+               ? const Image(
+                    image: AssetImage('assets/no-image.png'),
+                    fit: BoxFit.cover,
+                 )
+               : FadeInImage(
+                  placeholder: const AssetImage('assets/jar-loading.gif'),
+                  //image: NetworkImage('https://via.placeholder.com/400x300/f6f6f6'),
+                  image: NetworkImage(urlImage!),
+                  fit: BoxFit.cover,
+                ),
       ),
     );
   }
 }
 
+class _ProductDetails extends StatelessWidget {
+
+  final String nameProduc;
+    final String ?idProduct;
+
+  const _ProductDetails({ Key? key, required this.nameProduc, this.idProduct,}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 50.0),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+        width:   double.infinity,
+        height:  70.0,
+        decoration: _buildBoxDecoration(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              this.nameProduc,
+               style: const TextStyle( fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+               maxLines: 1,
+               overflow: TextOverflow.ellipsis,
+              ),
+            Text(
+              this.idProduct ?? '',
+               style: const TextStyle( fontSize: 15, color: Colors.white,),
+               maxLines: 1,
+               overflow: TextOverflow.ellipsis,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  BoxDecoration _buildBoxDecoration() => const BoxDecoration(
+        color:   Colors.indigo,
+        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25), topRight: Radius.circular(25))
+  );
+}
+
 class _PriceTag extends StatelessWidget {
-  const _PriceTag({Key? key,}) : super(key: key);
+
+  final double priceProduct;
+
+  const _PriceTag({Key? key, required this.priceProduct,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -72,11 +129,11 @@ class _PriceTag extends StatelessWidget {
       width: 100,
       height: 70,
       alignment: Alignment.center,
-      child: const FittedBox(
+      child:  FittedBox(
         fit: BoxFit.contain,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Text('\$10003.99', style: TextStyle(color: Colors.white, fontSize: 20),),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Text('\$ $priceProduct', style: const TextStyle(color: Colors.white, fontSize: 20),),
         ),
       ),
 
@@ -88,63 +145,37 @@ class _PriceTag extends StatelessWidget {
   }
 }
 
-class _ProductDetails extends StatelessWidget {
-  const _ProductDetails({ Key? key,}) : super(key: key);
+class _NotAvailable extends StatelessWidget {
+
+  final bool productDisponible;
+
+  const _NotAvailable({ Key? key, required this.productDisponible,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 50.0),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-        width:   double.infinity,
-        height:  70.0,
-        decoration: _BuildBoxDecoration(),
-        child:   Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text(
-              'Disco duro G',
-               style: TextStyle( fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-               maxLines: 1,
-               overflow: TextOverflow.ellipsis,
-              ),
-            Text(
-              'Id del disco duro',
-               style: TextStyle( fontSize: 15, color: Colors.white,),
-               maxLines: 1,
-               overflow: TextOverflow.ellipsis,
-              ),
-          ],
+    return Container(
+      width: 100,
+      height: 70,
+      alignment: Alignment.center,
+      child:  FittedBox(
+        fit: BoxFit.contain,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Text(
+            
+            productDisponible 
+            ? 'Disponible'
+            : 'No disponible', 
+            style: const TextStyle(color: Colors.white, fontSize: 20),
+            ),
         ),
       ),
-    );
-  }
 
-  BoxDecoration _BuildBoxDecoration() => const BoxDecoration(
-        color:   Colors.indigo,
-        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25), topRight: Radius.circular(25))
-  );
-}
-
-class _BackgroundImage extends StatelessWidget {
-  const _BackgroundImage({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(25),
-      child: Container(
-        width:  double.infinity,
-        height: 400.0,
-        child: const FadeInImage(
-          placeholder: AssetImage('assets/jar-loading.gif'),
-          image: NetworkImage('https://via.placeholder.com/400x300/f6f6f6'),
-          fit: BoxFit.cover,
-        ),
+      decoration: BoxDecoration(
+        color: Colors.yellow[800],
+        borderRadius: const BorderRadius.only(topLeft: Radius.circular(25),bottomRight: Radius.circular(25))
       ),
     );
   }
 }
+
