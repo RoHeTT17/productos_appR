@@ -15,6 +15,9 @@ class ProductsService extends ChangeNotifier{
   //Para saber si esta cargando o no. NO ES final, porque va estar cambiando entre true y false.
   bool isLoading = true;
 
+  //para saber si esta guardando
+  bool isSaving = false;
+
   //El producto seleccionado
   late Product selectedProduct;
 
@@ -56,6 +59,71 @@ class ProductsService extends ChangeNotifier{
 
     return this.products;
 
+  }
+
+  Future saveOrCreateProduct (Product product) async{
+
+    isSaving = true;
+    notifyListeners();
+
+
+     if (product.id == null){
+        //Insert
+         await createProduct(product);
+     }else{
+        //si el producto ya tiene un ID, es un update
+         await updateProduct(product);
+     }
+    
+    isSaving = false;
+    notifyListeners();
+
   } 
   
+  Future<String?> updateProduct (Product product) async{
+    //Armar la ruta para la petición
+    final url  = Uri.https(_baseURL, 'Products/${product.id}.json');
+    //Hacer la petición de actualizar (put).
+    final resp = await http.put(url,body: product.toJson());
+    //respuesta de la petición
+    final decodeData = resp.body;
+    
+    //Así lo hice yo
+    /*products.forEach((element) {
+      
+      if(element.id == product.id) {
+         element.name      = product.name;
+         element.price     = product.price;
+         element.available = product.available;
+      }
+    });*/
+
+    //Así se hizo en el curso
+    //1. Obtiene el indice en base al ID
+    final index = this.products.indexWhere((element) => element.id == product.id);
+    //Actualizar el listado
+    this.products[index] = product;
+
+    return product.id;
+
+  }
+
+    Future<String?> createProduct (Product product) async{
+    //Armar la ruta para la petición
+    final url  = Uri.https(_baseURL, 'Products.json');
+    //Hacer la petición de crear (post).
+    final resp = await http.post(url,body: product.toJson());
+    //convertir la respuesta de la petición a un Map
+    final decodeData = json.decode( resp.body);
+    
+    //asignar el ID al producto. La propiedad name, la retorna firebase, es el ID que genera
+    product.id = decodeData['name'];
+
+    //agregar a los productos
+    products.add(product);
+
+    return product.id;
+
+  }
+
 }

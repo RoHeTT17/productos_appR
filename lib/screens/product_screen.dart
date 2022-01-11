@@ -35,6 +35,11 @@ class _ProductScreenBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+
+    //crear refrerencia al provider, para poder utilizarlo en el botón de guardar
+    final productForm = Provider.of<ProductFormProvider>(context);
+
     return Scaffold(
       body: SingleChildScrollView(
         //keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -64,7 +69,13 @@ class _ProductScreenBody extends StatelessWidget {
       ),
      floatingActionButton: FloatingActionButton(
        child: const Icon(Icons.save_outlined),
-       onPressed: (){},
+       onPressed: ()async{
+         if(!productForm.isValidForm()) {
+           return;
+         } else {
+           await productService.saveOrCreateProduct(productForm.product);
+         }
+       },
      ), 
      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
    );
@@ -93,6 +104,7 @@ class _ProductForm extends StatelessWidget {
         child: Form(
           //Asociar el key para poder validar el estado del formulario
           key: productFormProvider.formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             children: [
               const SizedBox(height: 10,),
