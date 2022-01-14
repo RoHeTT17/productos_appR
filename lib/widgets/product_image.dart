@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class ProductImage extends StatelessWidget {
@@ -18,7 +20,11 @@ class ProductImage extends StatelessWidget {
           opacity: 0.9,
           child: ClipRRect(
             borderRadius: const BorderRadius.only(topRight: Radius.circular(45),topLeft: Radius.circular(45)),
-            child: urlImage == null
+            child: getImageProduct(urlImage)
+            
+            
+            /*  Se creo el método getImagePoduct
+                  urlImage == null
                   ? const Image(
                     image: AssetImage('assets/no-image.png'),
                     fit: BoxFit.cover,
@@ -29,6 +35,10 @@ class ProductImage extends StatelessWidget {
                       image: NetworkImage(urlImage!),
                       fit: BoxFit.cover,
                     ),
+            */
+
+
+
           ),
         ),
       ),
@@ -46,4 +56,32 @@ class ProductImage extends StatelessWidget {
       )
     ]
   );
+
+
+  Widget getImageProduct( String? path){
+
+      if(path==null) {
+        return const Image(
+                    image: AssetImage('assets/no-image.png'),
+                    fit: BoxFit.cover,
+                    );
+      }
+        
+      if(path.startsWith('http')) {
+        return FadeInImage(
+                      placeholder: const AssetImage('assets/jar-loading.gif'),
+                      //image: NetworkImage('https://via.placeholder.com/400x300/green'),
+                      image: NetworkImage(urlImage!),
+                      fit: BoxFit.cover,
+                    );
+      }
+
+      //Cargar una imagen que esta en el dispositivo  
+      return Image.file(
+            File(path),
+            fit: BoxFit.cover,
+      );
+
+  }
+
 }

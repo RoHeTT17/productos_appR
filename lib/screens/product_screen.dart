@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:productosapp_as/providers/product_form_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:productosapp_as/services/services.dart';
 import 'package:productosapp_as/ui/input_decorations.dart';
@@ -56,8 +57,32 @@ class _ProductScreenBody extends StatelessWidget {
                             top: 60,left: 20,),
                 Positioned(child: 
                             IconButton(icon: const Icon(Icons.camera_alt_outlined, size: 40, color: Colors.white,),
-                            onPressed: (){
-                              //TODO: Camara o galería
+                            onPressed: () async {
+
+                              
+                              final picket = new ImagePicker();
+                              
+                              
+                              /*Deprecate
+                              final PickedFile? pickedFile = await picket.getImage(
+                                source: ImageSource.camera,
+                                imageQuality: 100
+                                );
+                              */
+
+                              final XFile? pickedFile = await picket.pickImage(source: ImageSource.camera,imageQuality: 100);
+
+                              if( pickedFile == null){
+                                print("***************************************Nada image******************************");
+                                return;
+                              }
+
+                              //print('*************************************image path: ${pickedFile.path}********************');
+
+
+                              productService.previewSelectedProductImage(pickedFile.path);
+
+
                             }),
                             top: 60,right: 20,),                            
               ],
@@ -68,14 +93,31 @@ class _ProductScreenBody extends StatelessWidget {
         ),
       ),
      floatingActionButton: FloatingActionButton(
-       child: const Icon(Icons.save_outlined),
-       onPressed: ()async{
-         if(!productForm.isValidForm()) {
-           return;
-         } else {
-           await productService.saveOrCreateProduct(productForm.product);
-         }
-       },
+       child: productService.isSaving
+            ? const CircularProgressIndicator(color: Colors.white,)
+            : const Icon(Icons.save_outlined),
+
+       onPressed: productService.isSaving
+       
+                ? null //para deshabilitar el boroón guardar
+                :() async{
+
+                      if(!productForm.isValidForm()) {
+                        return;
+                      } else {
+
+                          final String? imageURL = await productService.uploadImagecloudinary();
+
+                          /*print('/*****************************ruta imagen***************************/');
+                          print(imageURL);*/
+
+                          if(imageURL != null) {
+                            productForm.product.picture = imageURL;
+                          }
+
+                          await productService.saveOrCreateProduct(productForm.product);
+                      }
+                    },
      ), 
      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
    );

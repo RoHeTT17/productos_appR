@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:productosapp_as/models/models.dart';
@@ -21,9 +22,13 @@ class ProductsService extends ChangeNotifier{
   //El producto seleccionado
   late Product selectedProduct;
 
+  //Para visualizar la foto que tomo el usuario.
+  File? newPicture;  
+
+
   ProductsService(){
 
-    this.loadProducts();
+    loadProducts();
 
   }
 
@@ -86,7 +91,7 @@ class ProductsService extends ChangeNotifier{
     //Hacer la petición de actualizar (put).
     final resp = await http.put(url,body: product.toJson());
     //respuesta de la petición
-    final decodeData = resp.body;
+    //final decodeData = resp.body;
     
     //Así lo hice yo
     /*products.forEach((element) {
@@ -124,6 +129,65 @@ class ProductsService extends ChangeNotifier{
 
     return product.id;
 
+  }
+
+  void previewSelectedProductImage( String pathImg){
+    //Este método solo es para cargar la imagen en la pantalla, aún no guarda.
+    //El path lo obtenemos al momento de tomar la fotografía o seleccionar de galería.
+    
+    //para previsualizar en la pantalla de products
+    this.selectedProduct.picture = pathImg;
+
+    //crea un archivo con la ruta
+    this.newPicture = File.fromUri(Uri(path: pathImg));
+
+
+    notifyListeners();
+
+  }
+
+  Future<String?> uploadImagecloudinary() async{
+
+    if(this.newPicture == null)
+      return null;
+
+    this.isSaving = true;
+
+    //Armar la petición
+    //Adonde se hará la petición (esta vez fue con parse, pero se puede hacer igual con https)
+    final url = Uri.parse('https://api.cloudinary.com/v1_1/rohett-flutter/image/upload?upload_preset=productApp'); 
+    //Crear el request. Es POST porque así lo pide Cloudinary (probablemente cada vez se crea la imagen y no hay reemplazar)
+    final imageUploadRequest = http.MultipartRequest('POST',url);
+    //crear el archivo que se va adjuntar (el primer parámetro es el key [nombre] que pide Cloudinary en la parte del body)
+    final file = await http.MultipartFile.fromPath('file', newPicture!.path);
+    
+    //Adjuntar el archivo a la petición
+    imageUploadRequest.files.add(file);
+
+    //Disparar la petición
+    final streamResponse = await imageUploadRequest.send();
+    //StreamResponse es la información que estamos esperando de la petición.
+    final resp = await http.Response.fromStream(streamResponse);
+
+
+    if(resp.statusCode != 200 && resp.statusCode != 201){
+      print('****************************************ALGO SALIO MAL**************************************************');
+      print(resp.body);
+      return null;
+    }
+
+
+    //si todo salio bien.
+    //print(resp.body);
+
+    //Limpiar la variable
+    this.newPicture = null;
+    
+
+    final decodeData = json.decode(resp.body);
+    return decodeData['secure_url'];//es la que genera Cloudinary
+
+    
   }
 
 }
