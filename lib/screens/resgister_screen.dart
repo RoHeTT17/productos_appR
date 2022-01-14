@@ -5,8 +5,8 @@ import 'package:productosapp_as/ui/input_decorations.dart';
 import 'package:productosapp_as/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen ({Key? key}) : super(key: key);
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen ({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class LoginScreen extends StatelessWidget {
                 childCardContainer: Column(
                   children: [
                     const SizedBox(height: 10,),
-                    Text('Login',style: Theme.of(context).textTheme.headline4,),
+                    Text('crear cuenta',style: Theme.of(context).textTheme.headline4,),
                     const SizedBox(height: 30,),
 
                      //Solo se declara a este nivel el provider porque solo se usará para el login
@@ -32,16 +32,16 @@ class LoginScreen extends StatelessWidget {
                 )
               ),
               const SizedBox(height: 50.0,), //50 para la tablet //25 para el celular
-              //const Text('Crear una cuenta',style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),),
               TextButton(
                 style: ButtonStyle(
                   overlayColor: MaterialStateProperty.all(Colors.indigo.withOpacity(0.1)),
                   shape: MaterialStateProperty.all(const StadiumBorder()),
                 ),
-                child: const Text('Crear una cuenta',style: TextStyle(fontSize: 20.0,color: Colors.black87),),
-                onPressed: () => Navigator.pushReplacementNamed(context, 'register'),
+                child: const Text('¿Ya tienes una cuenta?',style: TextStyle(fontSize: 20.0,color: Colors.black87),),
+                onPressed: () => Navigator.pushReplacementNamed(context, 'login'),
                 
               ),
+
               const SizedBox(height: 50.0,),//50 para la tablet //25 para el celular
             ],
 
@@ -145,7 +145,7 @@ class _LoginForm extends StatelessWidget {
                   //await Future.delayed(const Duration(seconds: 2 ));
 
                   //crear usuario
-                  final String? errorMessage= await authService.login(loginForm.email, loginForm.password);
+                  final String? errorMessage= await authService.createUser(loginForm.email, loginForm.password);
 
                   if(errorMessage==null){
                       Navigator.pushReplacementNamed(context, 'home');
@@ -154,9 +154,9 @@ class _LoginForm extends StatelessWidget {
                   }
 
                   //Regresar a false
-                  loginForm.setIsLoadind = false; 
+                  loginForm.setIsLoadind = false;             
+               
                 }
-
               }
             )
           ],

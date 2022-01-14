@@ -106,6 +106,7 @@ class _ProductScreenBody extends StatelessWidget {
                         return;
                       } else {
 
+                          //Obtner la ruta de la imgagen que se subio a cloudinary
                           final String? imageURL = await productService.uploadImagecloudinary();
 
                           /*print('/*****************************ruta imagen***************************/');
