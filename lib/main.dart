@@ -31,13 +31,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Productos App',
-      initialRoute: 'login',//'login',
+      initialRoute: 'checking',//'login',
       routes: {
-        'login'    : ( _ ) => const LoginScreen(),
+        'checking' : ( _ ) => const CheckAuthScreen(),
+        
         'home'     : ( _ ) => const HomeScreen(),
+        'login'    : ( _ ) => const LoginScreen(),
+        
         'product'  : ( _ ) => const ProductScreen(),
-        'register'  : ( _ ) => const RegisterScreen(),
+        'register' : ( _ ) => const RegisterScreen(),
       },
+      scaffoldMessengerKey: NotificationsService.messengerKey,
       theme: ThemeData.light().copyWith(
         scaffoldBackgroundColor: Colors.grey[300],
         //Modificar Appbar de manera global
@@ -51,6 +55,7 @@ class MyApp extends StatelessWidget {
           elevation: 0
         )
       ),
+      
     );
   }
 }

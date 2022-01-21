@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:productosapp_as/models/models.dart';
 import 'package:http/http.dart' as http;
 
@@ -25,6 +26,9 @@ class ProductsService extends ChangeNotifier{
   //Para visualizar la foto que tomo el usuario.
   File? newPicture;  
 
+  //Obtner el JWT del secureStorage porque como se cambio las reglas en el Firebase, se debe estar
+  // autentificado para hacer peticiones de recursos.
+  final storage = new FlutterSecureStorage();
 
   ProductsService(){
 

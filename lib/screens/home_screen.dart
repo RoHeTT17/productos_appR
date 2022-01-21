@@ -17,15 +17,25 @@ class HomeScreen extends StatelessWidget {
     //Solo se lee el products service porque ya esta declarado el provider de forma global
     final productsService = Provider.of<ProductsService>(context);
 
+    //Service para la autentificación 
+    final authService = Provider.of<AuthService>(context, listen: false);
+
     //Si esta cargando mostrar un un circularprogress en toda la pantalla
     if(productsService.isLoading) {
-        return LoadingScreen();
+        return const LoadingScreen();
     } else {
         //una vez que termina de cargar se muestra esto
         return  Scaffold(
         appBar: AppBar(
           centerTitle: true,
           title: const Text('Productos'),
+          actions: [IconButton(
+            icon: const Icon(Icons.login_outlined),
+            onPressed: (){
+               authService.logout(); 
+               Navigator.pushReplacementNamed(context, 'login');
+          },
+          )],
         ),
         body: ListView.builder(
           itemCount: productsService.products.length,

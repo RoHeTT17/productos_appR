@@ -138,8 +138,10 @@ class _LoginForm extends StatelessWidget {
                 //Ocultar el tecledo
                 FocusScope.of(context).unfocus();
 
-                if(loginForm.isValidForm()) {
-
+                if(!loginForm.isValidForm()) {
+                    return;  
+                }else{
+                  
                   loginForm.setIsLoadind = true;
 
                   //await Future.delayed(const Duration(seconds: 2 ));
@@ -150,11 +152,14 @@ class _LoginForm extends StatelessWidget {
                   if(errorMessage==null){
                       Navigator.pushReplacementNamed(context, 'home');
                   }else{
-                    print(errorMessage);
+                    //print(errorMessage);
+                    NotificationsService.showSnackBar(errorMessage);
+                    //Regresar a false
+                    loginForm.setIsLoadind = false; 
                   }
 
-                  //Regresar a false
-                  loginForm.setIsLoadind = false; 
+                  /*//Regresar a false
+                  loginForm.setIsLoadind = false;*/ 
                 }
 
               }
