@@ -43,7 +43,9 @@ class ProductsService extends ChangeNotifier{
      notifyListeners(); 
 
     //Armar la ruta para la petición
-    final url  = Uri.https(_baseURL, 'Products.json');
+    final url  = Uri.https(_baseURL, 'Products.json',{
+      "auth" : await storage.read(key: 'token') ?? ''
+    });
     //Hacer la petición.
     final resp = await http.get(url);
     //La respuesta que regresa viene como un String (el body de la respuesta). Se debe convertir la respuesta.body en
@@ -75,7 +77,6 @@ class ProductsService extends ChangeNotifier{
     isSaving = true;
     notifyListeners();
 
-
      if (product.id == null){
         //Insert
          await createProduct(product);
@@ -91,7 +92,10 @@ class ProductsService extends ChangeNotifier{
   
   Future<String?> updateProduct (Product product) async{
     //Armar la ruta para la petición
-    final url  = Uri.https(_baseURL, 'Products/${product.id}.json');
+    final url  = Uri.https(_baseURL, 'Products/${product.id}.json',{
+       "auth" : await storage.read(key: 'token') ?? ''
+    });
+
     //Hacer la petición de actualizar (put).
     final resp = await http.put(url,body: product.toJson());
     //respuesta de la petición
@@ -119,7 +123,9 @@ class ProductsService extends ChangeNotifier{
 
     Future<String?> createProduct (Product product) async{
     //Armar la ruta para la petición
-    final url  = Uri.https(_baseURL, 'Products.json');
+    final url  = Uri.https(_baseURL, 'Products.json',{
+        "auth" : await storage.read(key: 'token') ?? ''
+    });
     //Hacer la petición de crear (post).
     final resp = await http.post(url,body: product.toJson());
     //convertir la respuesta de la petición a un Map
@@ -179,7 +185,6 @@ class ProductsService extends ChangeNotifier{
       print(resp.body);
       return null;
     }
-
 
     //si todo salio bien.
     //print(resp.body);

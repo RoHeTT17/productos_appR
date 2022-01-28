@@ -24,6 +24,7 @@ class AuthService extends ChangeNotifier{
       //Son los datos como los pide el API de firebase
       'email' : email,
       'password' : password,
+      'returnSecureToken' : true
     };
 
     //crear petición
@@ -44,6 +45,7 @@ class AuthService extends ChangeNotifier{
     } else {
       return decodeRespuesta['error']['message'];
     } 
+    
   }
 
   //Si regresa null significa que todo esta bien. Sino regresa el mensaje del error
@@ -54,6 +56,7 @@ class AuthService extends ChangeNotifier{
       //Son los datos como los pide el API de firebase
       'email' : email,
       'password' : password,
+      'returnSecureToken' : true
     };
 
     //crear petición
