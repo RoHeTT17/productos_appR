@@ -158,8 +158,9 @@ class ProductsService extends ChangeNotifier{
 
   Future<String?> uploadImagecloudinary() async{
 
-    if(this.newPicture == null)
+    if(this.newPicture == null) {
       return null;
+    }
 
     this.isSaving = true;
 
@@ -195,8 +196,7 @@ class ProductsService extends ChangeNotifier{
 
     final decodeData = json.decode(resp.body);
     return decodeData['secure_url'];//es la que genera Cloudinary
-
-    
+ 
   }
 
 }

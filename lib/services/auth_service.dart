@@ -92,8 +92,46 @@ class AuthService extends ChangeNotifier{
 
    Future<String> existToken() async{
 
-     return await storage.read(key: 'token') ?? ''; 
+     //propio
+     final token =  await storage.read(key: 'token') ?? ''; 
+
+     //El código del método podría ir aquí, pero como estoy aprendiendo mejor así. 
+     return await isValidToken(token); 
+
+    //original
+    // return await storage.read(key: 'token') ?? ''; 
 
    }
+
+   Future<String> isValidToken (String token) async{
+
+    //
+    final Map<String,String> dataToken = {
+       "idToken" : token
+    };
+
+    //url de la petición con parámetros en la URL
+    final url = Uri.https(_baseURL, '/v1/accounts:lookup',{
+      "key" : _firebaseToken
+    });
+
+    //Mandar la petición
+    final resp = await http.post(url,body: json.encode(dataToken));
+
+    //recibir la respuesta. No uso los datos que regresa la respuesta, pero traen toda la info del usuario,
+    //por si necesitara cargar en pantalla sus datos
+    final Map<String, dynamic> dataResp = json.decode(resp.body);
+
+    if(resp.statusCode == 200) {
+      return token;
+    } else {
+      //ya no es valido el token
+      //Borrar el token
+      await storage.delete(key: 'token');
+      //regresar vacío para que nos mande al login  
+      return '';
+    }  
+
+  }
 
 }
